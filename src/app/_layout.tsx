@@ -1,9 +1,12 @@
+import { Stack } from 'expo-router';
+import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import { useEffect } from 'react';
-import { Stack } from 'expo-router';
+
+import { DarkTheme } from '@/shared/DarkTheme';
 
 export default function RootLayout() {
   SplashScreen.preventAutoHideAsync(); // Keep the splash screen visible while we fetch resources
@@ -24,10 +27,12 @@ export default function RootLayout() {
   }
 
   return (
-    <>
-      <StatusBar style="auto" />
+    <View style={{ flex: 1, backgroundColor: DarkTheme.colors.background }}>
+      <StatusBar style="light" />
 
-      <Stack />
-    </>
+      <Stack screenOptions={{ contentStyle: { backgroundColor: 'transparent' } }}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+    </View>
   );
 }
