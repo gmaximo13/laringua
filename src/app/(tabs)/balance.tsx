@@ -63,7 +63,7 @@ export default function balanceTab() {
           <View style={styles.expensesListContainer}>
             <View style={styles.expenseItem}>
               <View style={styles.expenseItemDescription}>
-                <AntDesign name="pinterest" color={DarkTheme.colors.primary} size={15} />
+                <AntDesign name="pinterest" color={DarkTheme.colors.prymaryGreen} size={15} />
                 <View>
                   <Text style={styles.expenseItemText}>Despesa 1</Text>
                   <Text style={styles.expenseHowPayText}>Você pagou</Text>
@@ -77,7 +77,7 @@ export default function balanceTab() {
 
             <View style={styles.expenseItem}>
               <View style={styles.expenseItemDescription}>
-                <AntDesign name="pinterest" color={DarkTheme.colors.primary} size={15} />
+                <AntDesign name="pinterest" color={DarkTheme.colors.prymaryGreen} size={15} />
                 <View>
                   <Text style={styles.expenseItemText}>Despesa 2</Text>
                   <Text style={styles.expenseHowPayText}>Você pagou</Text>
@@ -91,7 +91,7 @@ export default function balanceTab() {
 
             <View style={styles.expenseItem}>
               <View style={styles.expenseItemDescription}>
-                <AntDesign name="pinterest" color={DarkTheme.colors.shePaid} size={15} />
+                <AntDesign name="pinterest" color={DarkTheme.colors.expense} size={15} />
                 <View>
                   <Text style={styles.expenseItemText}>Despesa 3</Text>
                   <Text style={styles.expenseHowPayText}>Ela pagou</Text>
@@ -105,7 +105,7 @@ export default function balanceTab() {
 
             <View style={styles.expenseItem}>
               <View style={styles.expenseItemDescription}>
-                <AntDesign name="pinterest" color={DarkTheme.colors.primary} size={15} />
+                <AntDesign name="pinterest" color={DarkTheme.colors.prymaryGreen} size={15} />
                 <View>
                   <Text style={styles.expenseItemText}>Despesa 1</Text>
                   <Text style={styles.expenseHowPayText}>Você pagou</Text>
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 15,
-    backgroundColor: DarkTheme.colors.primary,
+    backgroundColor: DarkTheme.colors.prymaryGreen,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
   },
 
   balanceCard: {
-    backgroundColor: DarkTheme.colors.primary,
+    backgroundColor: DarkTheme.colors.prymaryGreen,
     marginTop: 16,
     marginHorizontal: 16,
     borderRadius: 25,
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   },
 
   expensesListContainer: {
-    backgroundColor: DarkTheme.colors.secondary,
+    backgroundColor: DarkTheme.colors.primary,
     borderWidth: 3,
     borderColor: DarkTheme.colors.border,
     borderRadius: 25,
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
   },
 
   expenseItemText: {
-    color: DarkTheme.colors.primary,
+    color: DarkTheme.colors.text,
     fontSize: DarkTheme.fontSizes.medium,
   },
 
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   },
 
   expenseItemAmountText: {
-    color: DarkTheme.colors.primary,
+    color: DarkTheme.colors.text,
     fontSize: DarkTheme.fontSizes.medium,
     fontWeight: 'bold',
   },
