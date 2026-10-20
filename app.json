@@ -6,7 +6,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true
     },
@@ -22,7 +22,13 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-font", "expo-splash-screen", "expo-router", "expo-status-bar", "@react-native-vector-icons/ant-design" ],
+    "plugins": [
+      "expo-font",
+      "expo-splash-screen",
+      "expo-router",
+      "expo-status-bar",
+      "@react-native-vector-icons/ant-design"
+    ],
     "experiments": {
       "typedRoutes": true
     }

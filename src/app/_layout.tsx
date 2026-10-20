@@ -28,7 +28,7 @@ export default function RootLayout() {
 
   return (
     <View style={{ flex: 1, backgroundColor: DarkTheme.colors.background }}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
 
       <Stack screenOptions={{ contentStyle: { backgroundColor: 'transparent' } }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

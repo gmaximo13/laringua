@@ -1,5 +1,5 @@
 import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AntDesign } from '@react-native-vector-icons/ant-design';
 
@@ -13,10 +13,15 @@ export default function Layout() {
       <TabSlot />
       <TabList style={[styles.tabList, { paddingBottom: insets.bottom + 10 }]}>
         <TabTrigger name="home" href="/">
-          <AntDesign name="home" color={DarkTheme.colors.secondary} size={20} />
+          <AntDesign name="home" color={DarkTheme.colors.secondary} size={25} style={styles.icon} />
         </TabTrigger>
         <TabTrigger name="balance" href="/balance">
-          <AntDesign name="wallet" color={DarkTheme.colors.secondary} size={20} />
+          <AntDesign
+            name="wallet"
+            color={DarkTheme.colors.secondary}
+            size={25}
+            style={styles.icon}
+          />
         </TabTrigger>
       </TabList>
     </Tabs>
@@ -30,7 +35,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     justifyContent: 'space-around',
     alignItems: 'center',
-    borderTopStartRadius: 20,
-    borderTopEndRadius: 20,
+    borderTopWidth: 1,
+    borderTopColor: DarkTheme.colors.secondary,
+  },
+
+  icon: {
+    padding: 5,
   },
 });
