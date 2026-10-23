@@ -1,5 +1,4 @@
-import AntDesign from '@react-native-vector-icons/ant-design';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 
 import { ArrowBack } from '@/shared/components/ArrowBack';
 import { DarkTheme } from '@/shared/DarkTheme';
