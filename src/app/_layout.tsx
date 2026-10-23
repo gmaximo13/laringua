@@ -32,6 +32,7 @@ export default function RootLayout() {
 
       <Stack screenOptions={{ contentStyle: { backgroundColor: 'transparent' } }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="expenses/index" options={{ headerShown: false }} />
         <Stack.Screen name="expenses/newExpense" options={{ headerShown: false }} />
         <Stack.Screen name="payment/index" options={{ headerShown: false }} />
       </Stack>

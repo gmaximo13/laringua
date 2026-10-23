@@ -1,9 +1,30 @@
-import { View, Text } from 'react-native';
+import AntDesign from '@react-native-vector-icons/ant-design';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+
+import { ArrowBack } from '@/shared/components/ArrowBack';
+import { DarkTheme } from '@/shared/DarkTheme';
+import { ExpenseListItem } from '@/shared/components/ExpenseListItem';
 
 export default function NewExpense() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Em Construção</Text>
+    <View style={styles.container}>
+      <ArrowBack titleName="Despesas" />
+      <ScrollView>
+        <ExpenseListItem
+          descreption="Despesa 1"
+          userPaid="Eu"
+          isUserPaid={true}
+          amountValue="40,00"
+        />
+      </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 24,
+    backgroundColor: DarkTheme.colors.background,
+  },
+});

@@ -3,6 +3,7 @@ import { AntDesign } from '@react-native-vector-icons/ant-design';
 import { useRouter } from 'expo-router';
 
 import { DarkTheme } from '@/shared/DarkTheme';
+import { ExpenseListItem } from '@/shared/components/ExpenseListItem';
 
 export default function BalanceTab() {
   const router = useRouter();
@@ -59,67 +60,39 @@ export default function BalanceTab() {
         <View style={styles.expensesList}>
           <View style={styles.expensesListHeader}>
             <Text style={styles.cardTitleText}>Ultimas despesas</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/expenses')}>
               <Text style={styles.seeAllExpenses}>Ver todas</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.expensesListContainer}>
-            <View style={styles.expenseItem}>
-              <View style={styles.expenseItemDescription}>
-                <AntDesign name="pinterest" color={DarkTheme.colors.prymaryGreen} size={15} />
-                <View>
-                  <Text style={styles.expenseItemText}>Despesa 1</Text>
-                  <Text style={styles.expenseHowPayText}>Você pagou</Text>
-                </View>
-              </View>
+            <ExpenseListItem
+              descreption="Despesa 1"
+              userPaid="Eu"
+              isUserPaid={true}
+              amountValue="40,00"
+            />
 
-              <View style={styles.expenseItemAmount}>
-                <Text style={styles.expenseItemAmountText}>R$ 100,00</Text>
-              </View>
-            </View>
+            <ExpenseListItem
+              descreption="Despesa 2"
+              userPaid="Ela"
+              isUserPaid={false}
+              amountValue="40,00"
+            />
 
-            <View style={styles.expenseItem}>
-              <View style={styles.expenseItemDescription}>
-                <AntDesign name="pinterest" color={DarkTheme.colors.prymaryGreen} size={15} />
-                <View>
-                  <Text style={styles.expenseItemText}>Despesa 2</Text>
-                  <Text style={styles.expenseHowPayText}>Você pagou</Text>
-                </View>
-              </View>
+            <ExpenseListItem
+              descreption="Despesa 3"
+              userPaid="Eu"
+              isUserPaid={true}
+              amountValue="40,00"
+            />
 
-              <View style={styles.expenseItemAmount}>
-                <Text style={styles.expenseItemAmountText}>R$ 50,00</Text>
-              </View>
-            </View>
-
-            <View style={styles.expenseItem}>
-              <View style={styles.expenseItemDescription}>
-                <AntDesign name="pinterest" color={DarkTheme.colors.expense} size={15} />
-                <View>
-                  <Text style={styles.expenseItemText}>Despesa 3</Text>
-                  <Text style={styles.expenseHowPayText}>Ela pagou</Text>
-                </View>
-              </View>
-
-              <View style={styles.expenseItemAmount}>
-                <Text style={styles.expenseItemAmountText}>R$ 100,00</Text>
-              </View>
-            </View>
-
-            <View style={styles.expenseItem}>
-              <View style={styles.expenseItemDescription}>
-                <AntDesign name="pinterest" color={DarkTheme.colors.prymaryGreen} size={15} />
-                <View>
-                  <Text style={styles.expenseItemText}>Despesa 1</Text>
-                  <Text style={styles.expenseHowPayText}>Você pagou</Text>
-                </View>
-              </View>
-
-              <View style={styles.expenseItemAmount}>
-                <Text style={styles.expenseItemAmountText}>R$ 50,00</Text>
-              </View>
-            </View>
+            <ExpenseListItem
+              descreption="Despesa 4"
+              userPaid="Eu"
+              isUserPaid={true}
+              amountValue="40,00"
+            />
           </View>
         </View>
       </View>
@@ -305,41 +278,6 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: DarkTheme.colors.border,
     borderRadius: 25,
-  },
-
-  expenseItem: {
-    flexDirection: 'row',
-    padding: 10,
-    marginHorizontal: 16,
-    justifyContent: 'space-between',
-    borderBottomWidth: 2,
-    borderColor: DarkTheme.colors.border,
-  },
-
-  expenseItemText: {
-    color: DarkTheme.colors.text,
-    fontSize: DarkTheme.fontSizes.medium,
-  },
-
-  expenseItemDescription: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-
-  expenseItemAmount: {
-    justifyContent: 'center',
-  },
-
-  expenseHowPayText: {
-    fontSize: DarkTheme.fontSizes.extraSmall,
-    color: DarkTheme.colors.secondaryText,
-  },
-
-  expenseItemAmountText: {
-    color: DarkTheme.colors.text,
-    fontSize: DarkTheme.fontSizes.medium,
-    fontWeight: 'bold',
   },
 
   addExpenseButtonText: {
