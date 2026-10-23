@@ -1,8 +1,12 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@react-native-vector-icons/ant-design';
+import { useRouter } from 'expo-router';
 
 import { DarkTheme } from '@/shared/DarkTheme';
-export default function balanceTab() {
+
+export default function BalanceTab() {
+  const router = useRouter();
+
   return (
     <View style={styles.content}>
       <View>
@@ -27,7 +31,7 @@ export default function balanceTab() {
               <Text style={styles.cardCloverText}>☘</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.addPaymentButton}>
+          <TouchableOpacity style={styles.addPaymentButton} onPress={() => router.push('/payment')}>
             <Text style={styles.addPaymentButtonText}>Registrar Acerto</Text>
           </TouchableOpacity>
         </View>
@@ -120,7 +124,10 @@ export default function balanceTab() {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.addExpenseButton}>
+      <TouchableOpacity
+        style={styles.addExpenseButton}
+        onPress={() => router.push('/expenses/newExpense')}
+      >
         <Text style={styles.addExpenseButtonText}>Adicionar Despesa</Text>
       </TouchableOpacity>
     </View>

@@ -1,7 +1,6 @@
 import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
 import { StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AntDesign } from '@react-native-vector-icons/ant-design';
 
 import { DarkTheme } from '@/shared/DarkTheme';
 import { TabButton } from '@/shared/components/TabButton';
