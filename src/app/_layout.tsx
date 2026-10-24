@@ -36,11 +36,13 @@ export default function RootLayout() {
         <ParticipantsProvider>
           <Stack screenOptions={{ contentStyle: { backgroundColor: 'transparent' } }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="history" options={{ headerShown: false }} />
             <Stack.Screen name="expenses/index" options={{ headerShown: false }} />
             <Stack.Screen name="expenses/newExpense" options={{ headerShown: false }} />
             <Stack.Screen name="expenses/[id]/index" options={{ headerShown: false }} />
             <Stack.Screen name="expenses/[id]/edit" options={{ headerShown: false }} />
             <Stack.Screen name="payment/index" options={{ headerShown: false }} />
+            <Stack.Screen name="payment/history" options={{ headerShown: false }} />
           </Stack>
         </ParticipantsProvider>
       </DatabaseProvider>

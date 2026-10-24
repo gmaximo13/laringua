@@ -96,8 +96,11 @@ export default function BalanceTab() {
             <View style={styles.expensesList}>
               <View style={styles.expensesListHeader}>
                 <Text style={styles.cardTitleText}>Últimas despesas</Text>
-                <TouchableOpacity onPress={() => router.push('/expenses')}>
-                  <Text style={styles.seeAllExpenses}>Ver todas</Text>
+                <TouchableOpacity
+                  onPress={() => router.push('/history')}
+                  accessibilityRole="button"
+                >
+                  <Text style={styles.seeAllExpenses}>Ver histórico</Text>
                 </TouchableOpacity>
               </View>
 

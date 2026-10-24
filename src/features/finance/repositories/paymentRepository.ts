@@ -39,3 +39,11 @@ export async function listPayments(db: SQLiteDatabase): Promise<Payment[]> {
     ORDER BY date DESC, id DESC
   `);
 }
+
+export async function deletePayment(db: SQLiteDatabase, id: string): Promise<void> {
+  assertRecordId(id);
+  await withWriteTransaction(db, async (transaction) => {
+    const result = await transaction.runAsync('DELETE FROM payments WHERE id = ?', id);
+    if (result.changes !== 1) throw new Error('O acerto não foi encontrado.');
+  });
+}
