@@ -7,10 +7,11 @@ import { Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import { useEffect } from 'react';
 
 import { DarkTheme } from '@/shared/DarkTheme';
+import { DatabaseProvider } from '@/database/DatabaseProvider';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  SplashScreen.preventAutoHideAsync(); // Keep the splash screen visible while we fetch resources
-
   const [loaded, error] = useFonts({
     InterBold: Inter_700Bold,
     InterRegular: Inter_400Regular,
@@ -30,12 +31,14 @@ export default function RootLayout() {
     <View style={{ flex: 1, backgroundColor: DarkTheme.colors.background }}>
       <StatusBar style="dark" />
 
-      <Stack screenOptions={{ contentStyle: { backgroundColor: 'transparent' } }}>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="expenses/index" options={{ headerShown: false }} />
-        <Stack.Screen name="expenses/newExpense" options={{ headerShown: false }} />
-        <Stack.Screen name="payment/index" options={{ headerShown: false }} />
-      </Stack>
+      <DatabaseProvider>
+        <Stack screenOptions={{ contentStyle: { backgroundColor: 'transparent' } }}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="expenses/index" options={{ headerShown: false }} />
+          <Stack.Screen name="expenses/newExpense" options={{ headerShown: false }} />
+          <Stack.Screen name="payment/index" options={{ headerShown: false }} />
+        </Stack>
+      </DatabaseProvider>
     </View>
   );
 }
