@@ -1,30 +1,55 @@
 import { AntDesign } from '@react-native-vector-icons/ant-design';
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TextInput, type KeyboardTypeOptions } from 'react-native';
 import { DarkTheme } from '../DarkTheme';
-import { useState } from 'react';
+import { useState, type ComponentProps } from 'react';
+import { MoneyInput } from './MoneyInput';
 
 export type TCard = {
   titleCard: string;
-  keyboardType: string;
-  iconName: string;
+  keyboardType: KeyboardTypeOptions;
+  iconName: ComponentProps<typeof AntDesign>['name'];
+  value?: string;
+  onChangeText?: (value: string) => void;
+  editable?: boolean;
+  monetary?: boolean;
 };
 
-export function Card({ titleCard, keyboardType, iconName }: TCard) {
-  const [text, onChangeText] = useState('');
+export function Card({
+  titleCard,
+  keyboardType,
+  iconName,
+  value,
+  onChangeText,
+  editable = true,
+  monetary = false,
+}: TCard) {
+  const [text, onChangeTextInternal] = useState('');
 
   return (
     <View style={styles.card}>
       <View style={styles.cardIcon}>
-        <AntDesign name={iconName as 'form'} color={DarkTheme.colors.text} size={30} />
+        <AntDesign name={iconName} color={DarkTheme.colors.text} size={30} />
       </View>
       <View style={styles.cardTitle}>
         <Text style={styles.cardTitleText}>{titleCard}</Text>
-        <TextInput
-          keyboardType={keyboardType as 'default'}
-          style={styles.input}
-          onChangeText={onChangeText}
-          value={text}
-        />
+        {monetary ? (
+          <MoneyInput
+            value={value}
+            onChangeText={onChangeText}
+            editable={editable}
+            accessibilityLabel={titleCard}
+          />
+        ) : (
+          <TextInput
+            keyboardType={keyboardType}
+            editable={editable}
+            accessibilityLabel={titleCard}
+            style={styles.input}
+            placeholderTextColor={DarkTheme.colors.text}
+            onChangeText={onChangeText ?? onChangeTextInternal}
+            value={value ?? text}
+          />
+        )}
       </View>
     </View>
   );

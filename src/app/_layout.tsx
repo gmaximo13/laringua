@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 
 import { DarkTheme } from '@/shared/DarkTheme';
 import { DatabaseProvider } from '@/database/DatabaseProvider';
+import { ParticipantsProvider } from '@/features/finance/context/ParticipantsProvider';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -32,12 +33,14 @@ export default function RootLayout() {
       <StatusBar style="dark" />
 
       <DatabaseProvider>
-        <Stack screenOptions={{ contentStyle: { backgroundColor: 'transparent' } }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="expenses/index" options={{ headerShown: false }} />
-          <Stack.Screen name="expenses/newExpense" options={{ headerShown: false }} />
-          <Stack.Screen name="payment/index" options={{ headerShown: false }} />
-        </Stack>
+        <ParticipantsProvider>
+          <Stack screenOptions={{ contentStyle: { backgroundColor: 'transparent' } }}>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="expenses/index" options={{ headerShown: false }} />
+            <Stack.Screen name="expenses/newExpense" options={{ headerShown: false }} />
+            <Stack.Screen name="payment/index" options={{ headerShown: false }} />
+          </Stack>
+        </ParticipantsProvider>
       </DatabaseProvider>
     </View>
   );

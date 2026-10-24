@@ -4,27 +4,47 @@ import { UserRoundPlus, HeartPlus } from 'lucide-react-native';
 
 import { DarkTheme } from '../DarkTheme';
 
-export function HowPaid() {
-  const [userPaid, setUserPaid] = useState<boolean>(true);
+export function HowPaid({
+  value,
+  onChange,
+  labels = ['Eu', 'Ela'],
+  disabled = false,
+  title = 'Quem pagou:',
+}: {
+  value?: boolean;
+  onChange?: (value: boolean) => void;
+  labels?: readonly [string, string];
+  disabled?: boolean;
+  title?: string;
+}) {
+  const [localValue, setLocalValue] = useState(true);
+  const userPaid = value ?? localValue;
+  const select = onChange ?? setLocalValue;
 
   return (
     <View style={styles.userPaidContainer}>
-      <Text style={styles.titleText}>Quem pagou:</Text>
+      <Text style={styles.titleText}>{title}</Text>
       <View style={styles.userPaidSelectContainer}>
         <Pressable
           style={userPaid ? styles.userPaidSelect : styles.userPaid}
-          onPress={() => setUserPaid(true)}
+          onPress={() => select(true)}
+          disabled={disabled}
+          accessibilityRole="radio"
+          accessibilityState={{ selected: userPaid, disabled }}
         >
           <UserRoundPlus color={DarkTheme.colors.text} size={30} />
-          <Text style={styles.userPaidSelectText}>Eu</Text>
+          <Text style={styles.userPaidSelectText}>{labels[0]}</Text>
         </Pressable>
 
         <Pressable
           style={!userPaid ? styles.userPaidSelect : styles.userPaid}
-          onPress={() => setUserPaid(false)}
+          onPress={() => select(false)}
+          disabled={disabled}
+          accessibilityRole="radio"
+          accessibilityState={{ selected: !userPaid, disabled }}
         >
           <HeartPlus color={DarkTheme.colors.text} size={30} />
-          <Text style={styles.userPaidSelectText}>Ela</Text>
+          <Text style={styles.userPaidSelectText}>{labels[1]}</Text>
         </Pressable>
       </View>
     </View>
@@ -78,6 +98,8 @@ const styles = StyleSheet.create({
   },
 
   userPaidSelectText: {
+    flexShrink: 1,
+    textAlign: 'center',
     color: DarkTheme.colors.text,
     fontSize: DarkTheme.fontSizes.large,
   },

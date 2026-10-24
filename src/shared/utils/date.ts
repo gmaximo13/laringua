@@ -1,4 +1,10 @@
 // Validate calendar dates without UTC conversion or timezone-dependent shifts.
+export function toCalendarDate(date: Date): string {
+  const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  assertCalendarDate(value);
+  return value;
+}
+
 export function assertCalendarDate(value: string): void {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
     throw new Error('Data interna inválida.');

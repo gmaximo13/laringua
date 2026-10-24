@@ -1,14 +1,32 @@
-import { Text, StyleSheet, Pressable } from 'react-native';
+import { Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { DarkTheme } from '../DarkTheme';
 
 export type TAddValueButton = {
   title: string;
+  onPress?: () => void;
+  disabled?: boolean;
+  loading?: boolean;
 };
 
-export function AddValueButton({ title }: TAddValueButton) {
+export function AddValueButton({
+  title,
+  onPress,
+  disabled = false,
+  loading = false,
+}: TAddValueButton) {
   return (
-    <Pressable style={styles.addValueButton}>
-      <Text style={styles.addValueButtonText}>{title}</Text>
+    <Pressable
+      style={[styles.addValueButton, (disabled || loading) && { opacity: 0.5 }]}
+      onPress={onPress}
+      disabled={disabled || loading}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: disabled || loading, busy: loading }}
+    >
+      {loading ? (
+        <ActivityIndicator color={DarkTheme.colors.secondary} />
+      ) : (
+        <Text style={styles.addValueButtonText}>{title}</Text>
+      )}
     </Pressable>
   );
 }

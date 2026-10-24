@@ -3,26 +3,36 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { DarkTheme } from '../DarkTheme';
 import { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { formatDisplayDate, toCalendarDate } from '@/shared/utils/date';
 
-export function DatePickerCard() {
-  const [date, setDate] = useState(new Date());
+export function DatePickerCard({
+  value,
+  onChange,
+  disabled = false,
+}: {
+  value?: Date;
+  onChange?: (date: Date) => void;
+  disabled?: boolean;
+}) {
+  const [localDate, setLocalDate] = useState(new Date());
+  const date = value ?? localDate;
   const [show, setShow] = useState(false);
 
   return (
-    <Pressable style={styles.card} onPress={() => setShow(true)}>
+    <Pressable
+      style={styles.card}
+      onPress={() => setShow(true)}
+      disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel="Escolher data"
+    >
       <View style={styles.cardIcon}>
         <AntDesign name="calendar" color={DarkTheme.colors.text} size={30} />
       </View>
       <View style={styles.cardTitle}>
         <Text style={styles.cardTitleText}>Data</Text>
-        <Text style={styles.cardTitleText}>
-          {date.toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric',
-          })}
-        </Text>
-        {show && (
+        <Text style={styles.cardTitleText}>{formatDisplayDate(toCalendarDate(date))}</Text>
+        {show && !disabled && (
           <DateTimePicker
             testID="dateTimePicker"
             value={date}
@@ -32,7 +42,8 @@ export function DatePickerCard() {
               setShow(false);
 
               if (event.type === 'set' && selectedDate) {
-                setDate(selectedDate);
+                if (onChange) onChange(selectedDate);
+                else setLocalDate(selectedDate);
               }
             }}
             onDismiss={() => setShow(false)}

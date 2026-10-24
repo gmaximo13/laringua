@@ -14,7 +14,7 @@ export default function Index() {
         <ArrowBack titleName="Adicionar Pagamento" />
         <HowPaid />
         <DatePickerCard />
-        <Card titleCard="Valor" keyboardType="numeric" iconName="dollar" />
+        <Card titleCard="Valor" keyboardType="number-pad" iconName="dollar" monetary />
       </View>
 
       <View>
