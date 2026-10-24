@@ -1,6 +1,15 @@
-import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Alert,
+  Keyboard,
+  Platform,
+  ToastAndroid,
+} from 'react-native';
 import { Users, User, PencilLine } from 'lucide-react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 
 import { DarkTheme } from '@/shared/DarkTheme';
@@ -52,6 +61,13 @@ export function ExpenseForm({ initialExpense }: { initialExpense?: Expense }) {
       : true,
   );
   const [inputError, setInputError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!successMessage) return;
+    const timeout = setTimeout(() => setSuccessMessage(null), 3000);
+    return () => clearTimeout(timeout);
+  }, [successMessage]);
 
   const self = participants.find((person) => person.id === currentParticipantId);
   const partner = participants.find((person) => person.id !== currentParticipantId);
@@ -78,6 +94,7 @@ export function ExpenseForm({ initialExpense }: { initialExpense?: Expense }) {
   async function submit() {
     if (saving || !self || !partner) return;
     setInputError(null);
+    setSuccessMessage(null);
     try {
       const payerId = selfPaid ? self.id : partner.id;
       let split: SplitRule;
@@ -102,6 +119,20 @@ export function ExpenseForm({ initialExpense }: { initialExpense?: Expense }) {
         split,
       });
       if (saved) {
+        if (!initialExpense) {
+          setDescription('');
+          setAmount('');
+          setDate(new Date());
+          setSelfPaid(true);
+          setSplitType('equal');
+          setSelfAmount('');
+          setPartnerAmount('');
+          setSelfRemainder(true);
+          Keyboard.dismiss();
+          if (Platform.OS === 'android') ToastAndroid.show('Despesa salva', ToastAndroid.SHORT);
+          else setSuccessMessage('Despesa salva');
+          return;
+        }
         Alert.alert(
           'Despesa salva',
           initialExpense
@@ -120,6 +151,11 @@ export function ExpenseForm({ initialExpense }: { initialExpense?: Expense }) {
     <FixedFormLayout
       footer={
         <>
+          {successMessage && (
+            <Text style={styles.success} accessibilityLiveRegion="polite">
+              {successMessage}
+            </Text>
+          )}
           {(inputError || error) && (
             <Text style={styles.text} accessibilityRole="alert">
               {inputError || error}
@@ -215,6 +251,14 @@ export function ExpenseForm({ initialExpense }: { initialExpense?: Expense }) {
 }
 
 const styles = StyleSheet.create({
+  success: {
+    color: DarkTheme.colors.text,
+    backgroundColor: DarkTheme.colors.prymaryGreen,
+    padding: 10,
+    borderRadius: 16,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
   container: { flex: 1, backgroundColor: DarkTheme.colors.background },
   text: { color: DarkTheme.colors.text, fontSize: DarkTheme.fontSizes.medium },
   titleText: {

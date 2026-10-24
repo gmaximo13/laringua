@@ -43,7 +43,11 @@ export function useSaveExpense(expenseId?: string) {
         const id = await generateRecordId(db);
         await createExpense(db, id, input);
       }
-      // Keep the form locked after success until navigation unmounts it.
+      // Creation stays on screen for another expense; editing still navigates away.
+      if (!expenseId && active.current) {
+        pending.current = false;
+        setSaving(false);
+      }
       return active.current;
     } catch (cause) {
       console.error('Expense saving failed:', cause);
