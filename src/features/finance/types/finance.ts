@@ -49,3 +49,9 @@ export type ParticipantBalance = {
   // Positive: receivable. Negative: payable.
   balanceCents: number;
 };
+
+export type FinanceOverview = {
+  expenses: readonly Expense[];
+  balances: readonly ParticipantBalance[];
+  paidTotals: readonly { participantId: ParticipantId; amountCents: number }[];
+};

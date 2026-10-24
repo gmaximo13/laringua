@@ -1,16 +1,29 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { AntDesign } from '@react-native-vector-icons/ant-design';
 import { useRouter } from 'expo-router';
 
 import { DarkTheme } from '@/shared/DarkTheme';
 import { ExpenseListItem } from '@/shared/components/ExpenseListItem';
+import { useFinanceData } from '@/features/finance/hooks/useFinanceData';
+import { useParticipants } from '@/features/finance/context/ParticipantsContext';
+import { FinanceStatus } from '@/features/finance/components/FinanceStatus';
+import { formatBRL } from '@/shared/utils/money';
 
 export default function BalanceTab() {
   const router = useRouter();
+  const { data, loading, error, reload } = useFinanceData();
+  const { participants, currentParticipantId, persistenceAvailable } = useParticipants();
+  const partner = participants.find((person) => person.id !== currentParticipantId);
+  const balance =
+    data?.balances.find((item) => item.participantId === currentParticipantId)?.balanceCents ?? 0;
+  const selfPaid =
+    data?.paidTotals.find((item) => item.participantId === currentParticipantId)?.amountCents ?? 0;
+  const partnerPaid =
+    data?.paidTotals.find((item) => item.participantId === partner?.id)?.amountCents ?? 0;
 
   return (
     <View style={styles.content}>
-      <View>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 16 }}>
         <View style={styles.header}>
           <View style={styles.clover}>
             <Text style={styles.cloverText}>☘</Text>
@@ -21,81 +34,95 @@ export default function BalanceTab() {
           </View>
         </View>
 
-        <View style={styles.balanceCard}>
-          <View style={styles.balanceCardContainer}>
-            <View style={styles.balanceCardTextContainer}>
-              <Text style={styles.cardTitleText}>Saldo</Text>
-              <Text style={styles.cardSubtitleText}>Você deve receber</Text>
-              <Text style={styles.balanceCardText}>R$ 100,00</Text>
-            </View>
-            <View style={styles.cardClover}>
-              <Text style={styles.cardCloverText}>☘</Text>
-            </View>
-          </View>
-          <TouchableOpacity style={styles.addPaymentButton} onPress={() => router.push('/payment')}>
-            <Text style={styles.addPaymentButtonText}>Registrar Acerto</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.resume}>
-          <Text style={styles.cardTitleText}>Resumo do casal</Text>
-          <View style={styles.resumeCardContainer}>
-            <View style={styles.resumeCard}>
-              <View style={styles.resumeCardIcon}>
-                <AntDesign name="user" color={DarkTheme.colors.secondary} size={20} />
+        {loading || error || !data ? (
+          <FinanceStatus
+            loading={loading}
+            message={
+              loading
+                ? 'Carregando finanças...'
+                : (error ?? 'Não foi possível carregar as finanças.')
+            }
+            onRetry={!loading && persistenceAvailable ? reload : undefined}
+          />
+        ) : (
+          <>
+            <View style={styles.balanceCard}>
+              <View style={styles.balanceCardContainer}>
+                <View style={styles.balanceCardTextContainer}>
+                  <Text style={styles.cardTitleText}>Saldo</Text>
+                  <Text style={styles.cardSubtitleText}>
+                    {balance > 0
+                      ? 'Você deve receber'
+                      : balance < 0
+                        ? 'Você deve pagar'
+                        : 'Tudo certo entre vocês'}
+                  </Text>
+                  <Text style={styles.balanceCardText}>{formatBRL(Math.abs(balance))}</Text>
+                </View>
+                <View style={styles.cardClover}>
+                  <Text style={styles.cardCloverText}>☘</Text>
+                </View>
               </View>
-              <Text style={styles.cardResumeTitleText}>Você pagou</Text>
-              <Text style={styles.cardTitleText}>R$ 200,00</Text>
+              <TouchableOpacity
+                style={styles.addPaymentButton}
+                onPress={() => router.push('/payment')}
+              >
+                <Text style={styles.addPaymentButtonText}>Registrar Acerto</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.resumeCard}>
-              <View style={styles.resumeCardIcon}>
-                <AntDesign name="heart" color={DarkTheme.colors.secondary} size={20} />
+
+            <View style={styles.resume}>
+              <Text style={styles.cardTitleText}>Resumo do casal</Text>
+              <View style={styles.resumeCardContainer}>
+                <View style={styles.resumeCard}>
+                  <View style={styles.resumeCardIcon}>
+                    <AntDesign name="user" color={DarkTheme.colors.secondary} size={20} />
+                  </View>
+                  <Text style={styles.cardResumeTitleText}>Você pagou</Text>
+                  <Text style={styles.cardTitleText}>{formatBRL(selfPaid)}</Text>
+                </View>
+                <View style={styles.resumeCard}>
+                  <View style={styles.resumeCardIcon}>
+                    <AntDesign name="heart" color={DarkTheme.colors.secondary} size={20} />
+                  </View>
+                  <Text style={styles.cardResumeTitleText} numberOfLines={1}>
+                    {partner?.name ?? 'Outra pessoa'} pagou
+                  </Text>
+                  <Text style={styles.cardTitleText}>{formatBRL(partnerPaid)}</Text>
+                </View>
               </View>
-              <Text style={styles.cardResumeTitleText}>Ela pagou</Text>
-              <Text style={styles.cardTitleText}>R$ 100,00</Text>
             </View>
-          </View>
-        </View>
 
-        <View style={styles.expensesList}>
-          <View style={styles.expensesListHeader}>
-            <Text style={styles.cardTitleText}>Ultimas despesas</Text>
-            <TouchableOpacity onPress={() => router.push('/expenses')}>
-              <Text style={styles.seeAllExpenses}>Ver todas</Text>
-            </TouchableOpacity>
-          </View>
+            <View style={styles.expensesList}>
+              <View style={styles.expensesListHeader}>
+                <Text style={styles.cardTitleText}>Últimas despesas</Text>
+                <TouchableOpacity onPress={() => router.push('/expenses')}>
+                  <Text style={styles.seeAllExpenses}>Ver todas</Text>
+                </TouchableOpacity>
+              </View>
 
-          <View style={styles.expensesListContainer}>
-            <ExpenseListItem
-              descreption="Despesa 1"
-              userPaid="Eu"
-              isUserPaid={true}
-              amountValue="40,00"
-            />
-
-            <ExpenseListItem
-              descreption="Despesa 2"
-              userPaid="Ela"
-              isUserPaid={false}
-              amountValue="40,00"
-            />
-
-            <ExpenseListItem
-              descreption="Despesa 3"
-              userPaid="Eu"
-              isUserPaid={true}
-              amountValue="40,00"
-            />
-
-            <ExpenseListItem
-              descreption="Despesa 4"
-              userPaid="Eu"
-              isUserPaid={true}
-              amountValue="40,00"
-            />
-          </View>
-        </View>
-      </View>
+              <View style={styles.expensesListContainer}>
+                {data.expenses.length === 0 ? (
+                  <FinanceStatus message="Nenhuma despesa registrada ainda." />
+                ) : (
+                  data.expenses
+                    .slice(0, 4)
+                    .map((expense) => (
+                      <ExpenseListItem
+                        key={expense.id}
+                        description={expense.description}
+                        userPaid={`Pago por ${participants.find((person) => person.id === expense.payerId)?.name ?? 'Participante'}`}
+                        isUserPaid={expense.payerId === currentParticipantId}
+                        amountCents={expense.amountCents}
+                        date={expense.date}
+                      />
+                    ))
+                )}
+              </View>
+            </View>
+          </>
+        )}
+      </ScrollView>
 
       <TouchableOpacity
         style={styles.addExpenseButton}

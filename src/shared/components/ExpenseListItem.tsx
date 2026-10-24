@@ -2,19 +2,23 @@ import { View, Text, StyleSheet } from 'react-native';
 import { AntDesign } from '@react-native-vector-icons/ant-design';
 
 import { DarkTheme } from '../DarkTheme';
+import { formatBRL } from '../utils/money';
+import { formatDisplayDate } from '../utils/date';
 
 export type TExpenseListItem = {
-  descreption: string;
+  description: string;
   userPaid: string;
   isUserPaid: boolean;
-  amountValue: string;
+  amountCents: number;
+  date: string;
 };
 
 export function ExpenseListItem({
-  descreption,
+  description,
   userPaid,
   isUserPaid,
-  amountValue,
+  amountCents,
+  date,
 }: TExpenseListItem) {
   return (
     <View style={styles.expenseItem}>
@@ -24,14 +28,18 @@ export function ExpenseListItem({
           color={isUserPaid ? DarkTheme.colors.prymaryGreen : DarkTheme.colors.expense}
           size={15}
         />
-        <View>
-          <Text style={styles.expenseItemText}>{descreption}</Text>
-          <Text style={styles.expenseHowPayText}>{userPaid}</Text>
+        <View style={styles.details}>
+          <Text style={styles.expenseItemText} numberOfLines={2}>
+            {description}
+          </Text>
+          <Text style={styles.expenseHowPayText}>
+            {userPaid} · {formatDisplayDate(date)}
+          </Text>
         </View>
       </View>
 
       <View style={styles.expenseItemAmount}>
-        <Text style={styles.expenseItemAmountText}>{'R$ ' + amountValue}</Text>
+        <Text style={styles.expenseItemAmountText}>{formatBRL(amountCents)}</Text>
       </View>
     </View>
   );
@@ -53,14 +61,18 @@ const styles = StyleSheet.create({
   },
 
   expenseItemDescription: {
+    flex: 1,
+    minWidth: 0,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
   },
 
   expenseItemAmount: {
+    marginLeft: 12,
     justifyContent: 'center',
   },
+  details: { flex: 1, minWidth: 0 },
 
   expenseHowPayText: {
     fontSize: DarkTheme.fontSizes.extraSmall,
