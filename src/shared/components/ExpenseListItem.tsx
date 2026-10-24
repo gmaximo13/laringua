@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { AntDesign } from '@react-native-vector-icons/ant-design';
 
 import { DarkTheme } from '../DarkTheme';
@@ -11,6 +11,7 @@ export type TExpenseListItem = {
   isUserPaid: boolean;
   amountCents: number;
   date: string;
+  onPress?: () => void;
 };
 
 export function ExpenseListItem({
@@ -19,9 +20,15 @@ export function ExpenseListItem({
   isUserPaid,
   amountCents,
   date,
+  onPress,
 }: TExpenseListItem) {
   return (
-    <View style={styles.expenseItem}>
+    <Pressable
+      style={styles.expenseItem}
+      onPress={onPress}
+      disabled={!onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+    >
       <View style={styles.expenseItemDescription}>
         <AntDesign
           name="pinterest"
@@ -41,7 +48,7 @@ export function ExpenseListItem({
       <View style={styles.expenseItemAmount}>
         <Text style={styles.expenseItemAmountText}>{formatBRL(amountCents)}</Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 

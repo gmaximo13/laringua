@@ -1,5 +1,6 @@
 import { View, StyleSheet, FlatList } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 
 import { ArrowBack } from '@/shared/components/ArrowBack';
 import { DarkTheme } from '@/shared/DarkTheme';
@@ -41,6 +42,7 @@ export default function ExpensesScreen() {
               isUserPaid={item.payerId === currentParticipantId}
               amountCents={item.amountCents}
               date={item.date}
+              onPress={() => router.push({ pathname: '/expenses/[id]', params: { id: item.id } })}
             />
           )}
         />

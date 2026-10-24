@@ -5,6 +5,15 @@ export function toCalendarDate(date: Date): string {
   return value;
 }
 
+export function fromCalendarDate(value: string): Date {
+  assertCalendarDate(value);
+  const [year, month, day] = value.split('-').map(Number);
+  const date = new Date();
+  date.setHours(12, 0, 0, 0);
+  date.setFullYear(year, month - 1, day);
+  return date;
+}
+
 export function assertCalendarDate(value: string): void {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
     throw new Error('Data interna inválida.');

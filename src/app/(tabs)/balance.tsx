@@ -115,6 +115,9 @@ export default function BalanceTab() {
                         isUserPaid={expense.payerId === currentParticipantId}
                         amountCents={expense.amountCents}
                         date={expense.date}
+                        onPress={() =>
+                          router.push({ pathname: '/expenses/[id]', params: { id: expense.id } })
+                        }
                       />
                     ))
                 )}

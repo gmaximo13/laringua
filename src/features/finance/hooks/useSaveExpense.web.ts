@@ -1,6 +1,6 @@
 import type { ExpenseInput } from '../types/finance';
 
-export function useCreateExpense() {
+export function useSaveExpense(_expenseId?: string) {
   return {
     saving: false,
     error: null,

@@ -65,15 +65,29 @@ type ExpenseRow = Omit<Expense, 'splits'> & {
 };
 
 export async function listExpenses(db: SQLiteDatabase): Promise<Expense[]> {
+  return readExpenses(db);
+}
+
+export async function getExpenseById(db: SQLiteDatabase, id: string): Promise<Expense | null> {
+  assertRecordId(id);
+  const expenses = await readExpenses(db, id);
+  return expenses[0] ?? null;
+}
+
+async function readExpenses(db: SQLiteDatabase, id?: string): Promise<Expense[]> {
   // One statement reads expenses and allocations from the same database snapshot.
-  const rows = await db.getAllAsync<ExpenseRow>(`
+  const rows = await db.getAllAsync<ExpenseRow>(
+    `
     SELECT e.id, e.description, e.amount_cents AS amountCents,
            e.payer_id AS payerId, e.date, e.split_type AS splitType,
            s.participant_id AS splitParticipantId, s.amount_cents AS splitAmountCents
     FROM expenses e
     LEFT JOIN expense_splits s ON s.expense_id = e.id
+    ${id === undefined ? '' : 'WHERE e.id = ?'}
     ORDER BY e.date DESC, e.id DESC, s.participant_id ASC
-  `);
+  `,
+    id === undefined ? [] : [id],
+  );
   const expenses = new Map<string, Expense & { splits: ExpenseSplit[] }>();
   for (const row of rows) {
     let expense = expenses.get(row.id);
@@ -97,4 +111,66 @@ export async function listExpenses(db: SQLiteDatabase): Promise<Expense[]> {
     }
   }
   return [...expenses.values()];
+}
+
+export async function updateExpense(
+  db: SQLiteDatabase,
+  id: string,
+  input: ExpenseInput,
+): Promise<Expense> {
+  assertRecordId(id);
+  const draft: ExpenseInput = {
+    ...input,
+    description: input.description.trim(),
+    split:
+      input.split.type === 'custom'
+        ? { type: 'custom', splits: input.split.splits.map((split) => ({ ...split })) }
+        : { ...input.split },
+  };
+  return withWriteTransaction(db, async (transaction) => {
+    const existing = await getExpenseById(transaction, id);
+    if (!existing) throw new Error('A despesa não foi encontrada.');
+    const participants = await listParticipants(transaction);
+    const splits = validateExpense(
+      draft,
+      participants.map((person) => person.id),
+    );
+    await transaction.runAsync(
+      `UPDATE expenses SET description = ?, amount_cents = ?, payer_id = ?, date = ?, split_type = ? WHERE id = ?`,
+      draft.description,
+      draft.amountCents,
+      draft.payerId,
+      draft.date,
+      draft.split.type,
+      id,
+    );
+    await transaction.runAsync('DELETE FROM expense_splits WHERE expense_id = ?', id);
+    for (const split of splits) {
+      await transaction.runAsync(
+        'INSERT INTO expense_splits (expense_id, participant_id, amount_cents) VALUES (?, ?, ?)',
+        id,
+        split.participantId,
+        split.amountCents,
+      );
+    }
+    return {
+      id,
+      description: draft.description,
+      amountCents: draft.amountCents,
+      payerId: draft.payerId,
+      date: draft.date,
+      splitType: draft.split.type,
+      splits,
+    };
+  });
+}
+
+export async function deleteExpense(db: SQLiteDatabase, id: string): Promise<void> {
+  assertRecordId(id);
+  await withWriteTransaction(db, async (transaction) => {
+    if (!(await getExpenseById(transaction, id))) throw new Error('A despesa não foi encontrada.');
+    await transaction.runAsync('DELETE FROM expense_splits WHERE expense_id = ?', id);
+    const result = await transaction.runAsync('DELETE FROM expenses WHERE id = ?', id);
+    if (result.changes !== 1) throw new Error('Não foi possível excluir a despesa.');
+  });
 }
