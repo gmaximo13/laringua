@@ -4,6 +4,7 @@ import { DarkTheme } from '../DarkTheme';
 import { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { formatDisplayDate, toCalendarDate } from '@/shared/utils/date';
+import { formCardStyles } from './formCardStyles';
 
 export function DatePickerCard({
   value,
@@ -20,7 +21,7 @@ export function DatePickerCard({
 
   return (
     <Pressable
-      style={styles.card}
+      style={formCardStyles.card}
       onPress={() => setShow(true)}
       disabled={disabled}
       accessibilityRole="button"
@@ -29,9 +30,11 @@ export function DatePickerCard({
       <View style={styles.cardIcon}>
         <AntDesign name="calendar" color={DarkTheme.colors.text} size={30} />
       </View>
-      <View style={styles.cardTitle}>
+      <View style={formCardStyles.content}>
         <Text style={styles.cardTitleText}>Data</Text>
-        <Text style={styles.cardTitleText}>{formatDisplayDate(toCalendarDate(date))}</Text>
+        <View style={formCardStyles.value}>
+          <Text style={styles.dateText}>{formatDisplayDate(toCalendarDate(date))}</Text>
+        </View>
         {show && !disabled && (
           <DateTimePicker
             testID="dateTimePicker"
@@ -63,15 +66,6 @@ const styles = StyleSheet.create({
     fontSize: DarkTheme.fontSizes.medium,
   },
 
-  card: {
-    flexDirection: 'row',
-    backgroundColor: DarkTheme.colors.primary,
-    borderRadius: 25,
-    alignItems: 'center',
-    padding: 16,
-    marginTop: 16,
-  },
-
   cardIcon: {},
 
   cardTitleText: {
@@ -79,8 +73,5 @@ const styles = StyleSheet.create({
     fontSize: DarkTheme.fontSizes.extraSmall,
   },
 
-  cardTitle: {
-    paddingHorizontal: 16,
-    width: '90%',
-  },
+  dateText: { color: DarkTheme.colors.text, fontSize: DarkTheme.fontSizes.medium },
 });

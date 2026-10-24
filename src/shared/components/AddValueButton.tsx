@@ -1,4 +1,11 @@
-import { Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { DarkTheme } from '../DarkTheme';
 
 export type TAddValueButton = {
@@ -6,6 +13,7 @@ export type TAddValueButton = {
   onPress?: () => void;
   disabled?: boolean;
   loading?: boolean;
+  style?: StyleProp<ViewStyle>;
 };
 
 export function AddValueButton({
@@ -13,10 +21,11 @@ export function AddValueButton({
   onPress,
   disabled = false,
   loading = false,
+  style,
 }: TAddValueButton) {
   return (
     <Pressable
-      style={[styles.addValueButton, (disabled || loading) && { opacity: 0.5 }]}
+      style={[styles.addValueButton, (disabled || loading) && { opacity: 0.5 }, style]}
       onPress={onPress}
       disabled={disabled || loading}
       accessibilityRole="button"

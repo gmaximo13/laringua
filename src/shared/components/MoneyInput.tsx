@@ -42,11 +42,26 @@ export function MoneyInput({ value, onChangeText, editable = true, accessibility
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  prefix: { color: DarkTheme.colors.text, fontSize: DarkTheme.fontSizes.medium },
+  prefix: {
+    height: 36,
+    textAlignVertical: 'center',
+    textAlign: 'center',
+    color: DarkTheme.colors.text,
+    fontSize: DarkTheme.fontSizes.medium,
+    fontFamily: DarkTheme.fonts.families.regular,
+    lineHeight: 36,
+    includeFontPadding: false,
+  },
   input: {
     flex: 1,
     minWidth: 0,
-    minHeight: 44,
+    height: 36,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    textAlignVertical: 'center',
+    includeFontPadding: false,
+    fontFamily: DarkTheme.fonts.families.regular,
+    lineHeight: 22,
     color: DarkTheme.colors.text,
     fontSize: DarkTheme.fontSizes.medium,
   },

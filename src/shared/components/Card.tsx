@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, type KeyboardTypeOptions } from 'rea
 import { DarkTheme } from '../DarkTheme';
 import { useState, type ComponentProps } from 'react';
 import { MoneyInput } from './MoneyInput';
+import { formCardStyles } from './formCardStyles';
 
 export type TCard = {
   titleCard: string;
@@ -26,11 +27,11 @@ export function Card({
   const [text, onChangeTextInternal] = useState('');
 
   return (
-    <View style={styles.card}>
+    <View style={formCardStyles.card}>
       <View style={styles.cardIcon}>
         <AntDesign name={iconName} color={DarkTheme.colors.text} size={30} />
       </View>
-      <View style={styles.cardTitle}>
+      <View style={formCardStyles.content}>
         <Text style={styles.cardTitleText}>{titleCard}</Text>
         {monetary ? (
           <MoneyInput
@@ -57,6 +58,7 @@ export function Card({
 
 const styles = StyleSheet.create({
   input: {
+    height: 36,
     borderRadius: 15,
     borderWidth: 0,
     borderColor: DarkTheme.colors.prymaryGreen,
@@ -64,24 +66,10 @@ const styles = StyleSheet.create({
     fontSize: DarkTheme.fontSizes.medium,
   },
 
-  card: {
-    flexDirection: 'row',
-    backgroundColor: DarkTheme.colors.primary,
-    borderRadius: 25,
-    alignItems: 'center',
-    padding: 16,
-    marginTop: 16,
-  },
-
   cardIcon: {},
 
   cardTitleText: {
     color: DarkTheme.colors.text,
     fontSize: DarkTheme.fontSizes.extraSmall,
-  },
-
-  cardTitle: {
-    paddingHorizontal: 16,
-    width: '90%',
   },
 });

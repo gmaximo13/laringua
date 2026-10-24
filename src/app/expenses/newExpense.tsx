@@ -1,17 +1,7 @@
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import { Users, User, PencilLine } from 'lucide-react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DarkTheme } from '@/shared/DarkTheme';
 import { ArrowBack } from '@/shared/components/ArrowBack';
@@ -20,6 +10,7 @@ import { HowPaid } from '@/shared/components/HowPaid';
 import { AddValueButton } from '@/shared/components/AddValueButton';
 import { DatePickerCard } from '@/shared/components/DatePickerCard';
 import { MoneyInput } from '@/shared/components/MoneyInput';
+import { FixedFormLayout } from '@/shared/components/FixedFormLayout';
 import { parseBRLToCents } from '@/shared/utils/money';
 import { toCalendarDate } from '@/shared/utils/date';
 import { useParticipants } from '@/features/finance/context/ParticipantsContext';
@@ -29,7 +20,6 @@ import type { SplitRule } from '@/features/finance/types/finance';
 export default function NewExpenseScreen() {
   const { participants, currentParticipantId, persistenceAvailable } = useParticipants();
   const { saving, error, saveExpense } = useCreateExpense();
-  const insets = useSafeAreaInsets();
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(new Date());
@@ -99,121 +89,110 @@ export default function NewExpenseScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    <FixedFormLayout
+      footer={
+        <AddValueButton
+          title="Adicionar Despesa"
+          onPress={() => void submit()}
+          loading={saving}
+          style={{ marginBottom: 0 }}
+        />
+      }
     >
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={[
-          styles.content,
-          { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 },
-        ]}
-      >
-        <ArrowBack titleName="Adicionar Despesa" />
-        <Card
-          titleCard="Descrição"
-          keyboardType="default"
-          iconName="form"
-          value={description}
-          onChangeText={setDescription}
-          editable={!saving}
+      <ArrowBack titleName="Adicionar Despesa" />
+      <Card
+        titleCard="Descrição"
+        keyboardType="default"
+        iconName="form"
+        value={description}
+        onChangeText={setDescription}
+        editable={!saving}
+      />
+      <DatePickerCard value={date} onChange={setDate} disabled={saving} />
+      <Card
+        titleCard="Valor"
+        keyboardType="number-pad"
+        monetary
+        iconName="dollar"
+        value={amount}
+        onChangeText={setAmount}
+        editable={!saving}
+      />
+      <HowPaid value={selfPaid} onChange={setSelfPaid} labels={labels} disabled={saving} />
+      <Text style={styles.titleText}>Dividir responsabilidade</Text>
+      <View style={styles.options}>
+        {(
+          [
+            { type: 'equal', label: 'Igual', Icon: Users },
+            { type: 'custom', label: 'Personalizado', Icon: PencilLine },
+            { type: 'single', label: 'Total', Icon: User },
+          ] as const
+        ).map(({ type, label, Icon }) => (
+          <Pressable
+            key={type}
+            onPress={() => setSplitType(type)}
+            disabled={saving}
+            accessibilityRole="radio"
+            accessibilityState={{ selected: splitType === type, disabled: saving }}
+            style={[styles.option, splitType === type && styles.selected]}
+          >
+            <Icon color={DarkTheme.colors.text} size={24} />
+            <Text style={styles.optionText}>{label}</Text>
+          </Pressable>
+        ))}
+      </View>
+      {splitType === 'equal' && oddAmount && (
+        <HowPaid
+          title="Quem assume o centavo restante?"
+          value={selfRemainder}
+          onChange={setSelfRemainder}
+          labels={labels}
+          disabled={saving}
         />
-        <DatePickerCard value={date} onChange={setDate} disabled={saving} />
-        <Card
-          titleCard="Valor"
-          keyboardType="number-pad"
-          monetary
-          iconName="dollar"
-          value={amount}
-          onChangeText={setAmount}
-          editable={!saving}
-        />
-        <HowPaid value={selfPaid} onChange={setSelfPaid} labels={labels} disabled={saving} />
-        <Text style={styles.titleText}>Dividir responsabilidade</Text>
-        <View style={styles.options}>
-          {(
-            [
-              { type: 'equal', label: 'Igual', Icon: Users },
-              { type: 'custom', label: 'Personalizado', Icon: PencilLine },
-              { type: 'single', label: 'Total', Icon: User },
-            ] as const
-          ).map(({ type, label, Icon }) => (
-            <Pressable
-              key={type}
-              onPress={() => setSplitType(type)}
-              disabled={saving}
-              accessibilityRole="radio"
-              accessibilityState={{ selected: splitType === type, disabled: saving }}
-              style={[styles.option, splitType === type && styles.selected]}
-            >
-              <Icon color={DarkTheme.colors.text} size={30} />
-              <Text style={styles.optionText}>{label}</Text>
-            </Pressable>
+      )}
+      {splitType === 'single' && (
+        <Text style={styles.hint}>
+          {selfPaid ? partner.name : self.name} fica responsável por 100% desta despesa
+        </Text>
+      )}
+      {splitType === 'custom' && (
+        <View style={styles.custom}>
+          {[
+            { label: labels[0], value: selfAmount, change: setSelfAmount },
+            { label: labels[1], value: partnerAmount, change: setPartnerAmount },
+          ].map((field) => (
+            <View key={field.label} style={styles.customField}>
+              <Text style={styles.customLabel} numberOfLines={1}>
+                {field.label}
+              </Text>
+              <MoneyInput
+                accessibilityLabel={`Responsabilidade de ${field.label}`}
+                value={field.value}
+                onChangeText={field.change}
+                editable={!saving}
+              />
+            </View>
           ))}
         </View>
-        {splitType === 'equal' && oddAmount && (
-          <HowPaid
-            title="Quem assume o centavo restante?"
-            value={selfRemainder}
-            onChange={setSelfRemainder}
-            labels={labels}
-            disabled={saving}
-          />
-        )}
-        {splitType === 'single' && (
-          <Text style={styles.hint}>
-            {selfPaid ? partner.name : self.name} fica responsável por 100% desta despesa, como um
-            empréstimo.
-          </Text>
-        )}
-        {splitType === 'custom' && (
-          <View style={styles.custom}>
-            {[
-              { label: labels[0], value: selfAmount, change: setSelfAmount },
-              { label: labels[1], value: partnerAmount, change: setPartnerAmount },
-            ].map((field) => (
-              <View key={field.label} style={styles.customField}>
-                <Text style={styles.customLabel} numberOfLines={1}>
-                  {field.label}
-                </Text>
-                <MoneyInput
-                  accessibilityLabel={`Responsabilidade de ${field.label}`}
-                  value={field.value}
-                  onChangeText={field.change}
-                  editable={!saving}
-                />
-              </View>
-            ))}
-          </View>
-        )}
-        {(inputError || error) && (
-          <Text style={styles.text} accessibilityRole="alert">
-            {inputError || error}
-          </Text>
-        )}
-        <View style={styles.submit}>
-          <AddValueButton
-            title="Adicionar Despesa"
-            onPress={() => void submit()}
-            loading={saving}
-          />
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      )}
+      {(inputError || error) && (
+        <Text style={styles.text} accessibilityRole="alert">
+          {inputError || error}
+        </Text>
+      )}
+    </FixedFormLayout>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: DarkTheme.colors.background },
-  content: { flexGrow: 1, paddingHorizontal: 24 },
   text: { color: DarkTheme.colors.text, fontSize: DarkTheme.fontSizes.medium },
   titleText: {
     color: DarkTheme.colors.text,
     fontSize: DarkTheme.fontSizes.medium,
     fontWeight: 'bold',
-    paddingTop: 16,
-    paddingBottom: 10,
+    paddingTop: 8,
+    paddingBottom: 6,
   },
   hint: { color: DarkTheme.colors.secondaryText, marginTop: 10, fontSize: 14 },
   options: { flexDirection: 'row', justifyContent: 'space-between', gap: 8 },
@@ -225,7 +204,7 @@ const styles = StyleSheet.create({
     gap: 3,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
+    paddingVertical: 6,
   },
   selected: {
     backgroundColor: DarkTheme.colors.prymaryGreen,
@@ -252,5 +231,4 @@ const styles = StyleSheet.create({
     color: DarkTheme.colors.text,
     fontSize: DarkTheme.fontSizes.small,
   },
-  submit: { marginTop: 24 },
 });

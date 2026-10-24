@@ -10,12 +10,14 @@ export function HowPaid({
   labels = ['Eu', 'Ela'],
   disabled = false,
   title = 'Quem pagou:',
+  compact = false,
 }: {
   value?: boolean;
   onChange?: (value: boolean) => void;
   labels?: readonly [string, string];
   disabled?: boolean;
   title?: string;
+  compact?: boolean;
 }) {
   const [localValue, setLocalValue] = useState(true);
   const userPaid = value ?? localValue;
@@ -23,28 +25,44 @@ export function HowPaid({
 
   return (
     <View style={styles.userPaidContainer}>
-      <Text style={styles.titleText}>{title}</Text>
+      <Text style={[styles.titleText, compact && styles.compactTitle]}>{title}</Text>
       <View style={styles.userPaidSelectContainer}>
         <Pressable
-          style={userPaid ? styles.userPaidSelect : styles.userPaid}
+          style={[
+            userPaid ? styles.userPaidSelect : styles.userPaid,
+            compact && styles.compactOption,
+          ]}
           onPress={() => select(true)}
           disabled={disabled}
           accessibilityRole="radio"
           accessibilityState={{ selected: userPaid, disabled }}
         >
-          <UserRoundPlus color={DarkTheme.colors.text} size={30} />
-          <Text style={styles.userPaidSelectText}>{labels[0]}</Text>
+          <UserRoundPlus color={DarkTheme.colors.text} size={compact ? 24 : 30} />
+          <Text
+            style={[styles.userPaidSelectText, compact && styles.compactText]}
+            numberOfLines={1}
+          >
+            {labels[0]}
+          </Text>
         </Pressable>
 
         <Pressable
-          style={!userPaid ? styles.userPaidSelect : styles.userPaid}
+          style={[
+            !userPaid ? styles.userPaidSelect : styles.userPaid,
+            compact && styles.compactOption,
+          ]}
           onPress={() => select(false)}
           disabled={disabled}
           accessibilityRole="radio"
           accessibilityState={{ selected: !userPaid, disabled }}
         >
-          <HeartPlus color={DarkTheme.colors.text} size={30} />
-          <Text style={styles.userPaidSelectText}>{labels[1]}</Text>
+          <HeartPlus color={DarkTheme.colors.text} size={compact ? 24 : 30} />
+          <Text
+            style={[styles.userPaidSelectText, compact && styles.compactText]}
+            numberOfLines={1}
+          >
+            {labels[1]}
+          </Text>
         </Pressable>
       </View>
     </View>
@@ -52,6 +70,9 @@ export function HowPaid({
 }
 
 const styles = StyleSheet.create({
+  compactTitle: { paddingTop: 8, paddingBottom: 6, fontSize: 14 },
+  compactOption: { padding: 6 },
+  compactText: { fontSize: 16 },
   userPaidContainer: {
     gap: 3,
     justifyContent: 'center',
